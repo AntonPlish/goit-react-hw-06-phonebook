@@ -1,8 +1,9 @@
-import PropTypes from 'prop-types';
 import { Formik, Form, Field, ErrorMessage} from 'formik';
 import styled from '@emotion/styled';
 import * as yup from 'yup';
 import 'yup-phone';
+import { useDispatch } from 'react-redux';
+import { addContact } from 'redux/contactsSlice';
 
 const FormStyled = styled.section`
   padding: 8px;
@@ -24,44 +25,45 @@ const schema = yup.object().shape({
   // number: yup.string().phone('UA').required(),
 });
 
-const ContactsForm = function ({ onSubmit }) {
+const ContactsForm = function () {
+  const dispatch = useDispatch();
+  const handleSubmit = values => {
+    dispatch(addContact(values));
+  };
+
   return (
     <FormStyled>
       <Formik
         initialValues={{ name: '', number: '' }}
         validationSchema={schema}
         onSubmit={(values, { resetForm }) => {
-          onSubmit(values);
+          handleSubmit(values);
           resetForm();
         }}
       >
         <Form>
-          <Label htmlFor='nameInputId'>
+          <Label>
             Name
-            <ErrorMessage name="name" render={msg => <div>{msg}</div>} />
+            <br />
+            <Input type="text" name="name" />
+            <ErrorMessage name="name" component="div" />
           </Label>
-          {/* генерація Id може здійснюватися за допомогою 'shortid', 'nanoid', або Input в Label*/}
-          <Input id='nameInputId' type="text" name="name" />
-          <Label htmlFor='numberInputId'>
+          <br />
+          <Label>
             Number
-            <ErrorMessage name="number" render={msg => <div>{msg}</div>} />
+            <br />
+            <Input type="tel" name="number"/>
+            <ErrorMessage name="number" component="div" />
           </Label>
-          {/* генерація Id може здійснюватися за допомогою 'shortid', 'nanoid', або Input в Label*/}
-          <Input id='numberInputId' type="tel" name="number" />
-          <div>
-            <button style={{ backgroundColor: 'lightgreen', border: '0', borderRadius: '5px', width: '150px', height: '30px' }}
-              type="submit" name="addContact">
-              Add contact
-            </button>
-          </div>
+          <br />
+          <button style={{ backgroundColor: 'lightgreen', border: '0', borderRadius: '5px', width: '150px', height: '30px' }}
+            type="submit" name="addContact">
+            Add contact
+          </button>
         </Form>
       </Formik>
     </FormStyled>
   );
-};
-
-ContactsForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
 };
 
 export default ContactsForm;

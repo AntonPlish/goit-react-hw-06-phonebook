@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import styled from '@emotion/styled';
 import ContactItem from './ContactItem';
 
@@ -9,28 +9,21 @@ const ListSlyled = styled.ul`
   font-weight: 500;
 `;
 
-const ContactList = ({ contacts, filter, handleDelete }) => {
+const ContactList = function () {
+  const contacts = useSelector(state => state.contacts);
+  const filterText = useSelector(state => state.filter.text);
+
   return (
     <ListSlyled>
       {contacts
         .filter(contact =>
-          contact.name.toLowerCase().includes(filter.toLowerCase())
-      )
-        .map((contact, idx) => {
-          return (
-            <li key={idx}>
-              <ContactItem contact={contact} handleDelete={handleDelete} />
-            </li>
-          );
-          })}
+          contact.name.toLowerCase().includes(filterText.toLowerCase())
+        )
+        .map((contact, id) => {
+          return <li key={id}>{<ContactItem contact={contact} />}</li>;
+        })}
     </ListSlyled>
   );
-};
-
-ContactList.propTypes = {
-  contacts: PropTypes.array.isRequired,
-  filter: PropTypes.string.isRequired,
-  handleDelete: PropTypes.func.isRequired,
 };
 
 export default ContactList;

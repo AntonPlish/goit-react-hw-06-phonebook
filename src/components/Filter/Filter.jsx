@@ -1,6 +1,8 @@
-import PropTypes from 'prop-types';
 import { Formik, Form, Field } from 'formik';
 import styled from '@emotion/styled';
+import { newFilter } from 'redux/filterSlice';
+import { useSelector, useDispatch } from 'react-redux';
+
 
 const FilterPlateStyled = styled.section`
   border: 1px solid lightgrey;
@@ -13,15 +15,19 @@ const Input = styled(Field)`
   font-size: 16px;
 `;
 
-const Filter = function ({ filter, handleFilter }) {
+const Filter = function () {
+  const filter = useSelector(state => state.filter.text);
+  const dispatch = useDispatch();
+  const handleFilter = searchQuery => dispatch(newFilter(searchQuery));
+
   return (
     <FilterPlateStyled style={{ border: '0' }}>
       <Formik initialValues={{ filter: filter }}>
         <Form>
           <label>
             Find contacts by name
-            <div>
-              <Input
+            <br />
+            <Input
               type="text"
               name="filter"
               value={filter}
@@ -29,17 +35,11 @@ const Filter = function ({ filter, handleFilter }) {
                 handleFilter(e.target.value);
               }}
             ></Input>
-            </div>
           </label>
         </Form>
       </Formik>
     </FilterPlateStyled>
   );
-};
-
-Filter.Filter = {
-  filter: PropTypes.string.isRequired,
-  handleFilter: PropTypes.func.isRequired,
 };
 
 export default Filter;
